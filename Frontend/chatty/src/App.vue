@@ -1,20 +1,27 @@
 <template>
   <div class='container' v-cloak v-app="chatApp">
     <div v-if="!logged_in && !signing_up">
+      <h1>Welcome to</h1>
       <h1>Chatty</h1>
-      <button class="sign-in" style="height: 100px; width: 200px; color: black; border-radius: 20%; font-size: large;"
-        @click="googleSignIn">Sign in</button>
+      <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+      <div class="google-btn" style="cursor: default;" @click="googleSignIn">
+        <div class="google-icon-wrapper">
+          <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" />
+        </div>
+        <p class="btn-text"><b>Sign in with google</b></p>
+      </div>
     </div>
     <div v-if="signing_up">
-      <h3 style="color: white">It looks like it's your first time using chatty, Choose an interesting name</h3>
+      <h3 style="color: white">It looks like it's your first time using chatty, Choose an interesting username</h3>
       <br><br>
-      <form style="width: fit-content;">
-        <input type="text"
-          style="background-color: transparent; border: none; caret-color: azure; color: azure; width: fit-content; font-size: x-large;"
-          placeholder="Write here" v-model="admin" @keyup.enter="addFriend">
-      </form><br><br><br>
-      <button class="sign-in" style="height: 100px; width: 200px; color: black; border-radius: 20%; font-size: large;"
-        @click="addUser">Sign up</button>
+      <div style="left: 37%; position: absolute;">
+        <input class="btn btn-accept " type="submit" @click="addUser"
+          style="float: right; left: 70%; bottom: -100%; position: absolute;" />
+        <div style="overflow: hidden; padding-right: .5em;">
+          <input type="text" placeholder="Choose Name" v-model="admin"
+            style="background-color: transparent; border: none; caret-color: azure; color: azure;font-size: x-large; width: 80%;" />
+        </div>
+      </div>
     </div>
     <h1 v-if="logged_in" style="color:aquamarine;">Chatty</h1>
     <div v-if="logged_in" class='chatbox' id="MessageCtrl as chatMessage">
@@ -36,7 +43,7 @@
         <br />
         <p class="message"> Please select a frined to proceed </p>
       </div>
-      <div ref="scroll_down" style="overflow-y:scroll; overflow-x:hidden; height:400px;">
+      <div ref="scroll_down" style="overflow-y:scroll; overflow-x:hidden; height:435px;">
         <div class="chatbox__messages" v-for="message in messageSet" :key="message.key">
           <div class="chatbox__messages__user-message">
             <div v-if="admin === message.sender">
@@ -66,9 +73,10 @@
 
 <script>
 import axios from 'axios';
+import { toast } from 'bulma-toast';
 import firebase from "firebase/compat/app";
-import io from 'socket.io-client';
-const socket = io('http://localhost:3001', { transports: ['websocket'] });
+//import io from 'socket.io-client';
+//const socket = io('https://chatty-backend-steel.vercel.app/', { transports: ['websocket'] });
 export default {
   data() {
     return {
@@ -80,31 +88,101 @@ export default {
       admin_email: "",
       currentReceiver: null,
       messageSet: [],
-      friendList: ["Manjur", "Surya", "Brendan", "Bishal"],
+      friendList: [],
+      isUnique: false,
     }
   },
   methods: {
-    async addUser() {
-      let url = "/add-user/";
-      let payload = {
-        "name": this.admin,
-        "email": this.admin_email,
+    async checkUserUnique() {
+      if (this.admin.length <= 3) {
+        return;
       }
+      let url = "/check-user-unique?name=" + this.admin
       await axios
-        .post(url, payload)
-        .then(() => {
-          this.logged_in = true; this.signing_up = false;
-          if (this.admin === "Aritra") {
-            this.friendList.push("Arima")
+        .get(url)
+        .then((response) => {
+          if (response.data) {
+            this.isUnique = true;
           }
-          if (this.admin === "Arima") {
-            this.friendList.push("Aritra")
+          else {
+            this.isUnique = false;
           }
         })
-        .catch((err) => { console.log(err) })
+        .catch((err) => {
+          console.log(err);
+          return false;
+        })
+    },
+    async getFriends() {
+      let url = "/get-friends?name=" + this.admin
+      await axios
+        .get(url)
+        .then((response) => {
+          this.friendList = response.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    },
+    async addUser() {
+      await this.checkUserUnique()
+      if (this.isUnique) {
+        let url = "/add-user/";
+        let payload = {
+          "name": this.admin,
+          "email": this.admin_email,
+        }
+        await axios
+          .post(url, payload)
+          .then(() => {
+            this.logged_in = true; this.signing_up = false;
+          })
+          .catch((err) => { console.log(err) })
+      }
+      else {
+        toast({
+          message: 'Username is already taken',
+          "duration": 2000,
+          "position": "top-right",
+          "closeOnClick": true,
+          "opacity": 1,
+          "single": false,
+          "offsetTop": 0,
+          "offsetBottom": 0,
+          "offsetLeft": 0,
+          "offsetRight": 0
+        });
+      }
     },
     async addFriend() {
-      this.friendList.push(this.friend)
+      let url = "/add-friend/";
+      let payload = {
+        "email": this.admin_email,
+        "friend": this.friend,
+      }
+      await axios
+        .patch(url, payload)
+        .then((response) => {
+          if (response.data === "") {
+            toast({
+              message: 'No such user exists',
+              "duration": 2000,
+              "position": "top-right",
+              "closeOnClick": true,
+              "opacity": 1,
+              "single": false,
+              "offsetTop": 0,
+              "offsetBottom": 0,
+              "offsetLeft": 0,
+              "offsetRight": 0
+            });
+          }
+          this.friend = "";
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+      this.getFriends();
     },
     async googleSignIn() {
       const provider = new firebase.auth.GoogleAuthProvider();
@@ -119,18 +197,14 @@ export default {
             .then((response) => {
               if (response !== null) {
                 this.admin = response.data;
-                if (this.admin === "Aritra") {
-                  this.friendList.push("Arima")
-                }
-                if (this.admin === "Arima") {
-                  this.friendList.push("Aritra")
-                }
                 if (this.admin === "") {
                   this.signing_up = true;
                   this.admin_email = user_email;
                 }
                 else {
                   this.logged_in = true;
+                  this.admin_email = user_email;
+                  this.getFriends();
                 }
               }
             })
@@ -140,13 +214,12 @@ export default {
           console.log(err);
         })
     },
-    sortMessages() {
-      this.messageSet.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+    sortMessages(array) {
+      return array.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
     },
     scrollToEnd() {
-      console.log("Called");
       var container = this.$refs.scroll_down;
-      console.log(container);
+      if (!container) return;
       container.scrollTop = container.scrollHeight;
     },
     async sendMessage() {
@@ -156,23 +229,24 @@ export default {
         "receiver": this.currentReceiver,
         "msg": this.message
       }
+      let tempMessageSet = [];
       await axios
         .post(url, payload)
-        .then((response) => { this.messageSet = response.data; this.message = ""; })
+        .then((response) => { tempMessageSet = response.data; this.message = ""; })
         .catch((err) => { console.log(err) })
-      this.sortMessages();
+      this.messageSet = this.sortMessages(tempMessageSet);
       this.scrollToEnd();
     },
     async getData(sender = null, receiver = null) {
       let url = "/get-messages";
+      let tempMessageSet = [];
       if (sender && receiver) {
         url += "?sender=" + sender + "&receiver=" + receiver;
         this.currentReceiver = receiver;
       }
-      console.log(url);
       await axios
         .get(url)
-        .then((response) => { this.messageSet = response.data; })
+        .then((response) => { tempMessageSet = response.data; })
         .catch((err) => { console.log(err) })
       url = "/get-messages";
       if (sender && receiver) {
@@ -180,18 +254,28 @@ export default {
       }
       await axios
         .get(url)
-        .then((response) => { this.messageSet.push.apply(this.messageSet, response.data); })
+        .then((response) => { this.messageSet.push.apply(tempMessageSet, response.data); })
         .catch((err) => { console.log(err) })
-      this.sortMessages();
+      this.messageSet = this.sortMessages(tempMessageSet);
       this.scrollToEnd();
     }
   },
   mounted() {
-    socket.on('connect', () => {
-    })
-    socket.on('message', () => {
-      this.getData(this.admin, this.currentReceiver)
-    })
+    setInterval(() => {
+      this.getFriends();
+      if (this.currentReceiver) {
+        this.getData(this.admin, this.currentReceiver)
+      }
+    }, 1000);
+    // socket.on('connect', () => {
+    // })
+    // socket.on('message', () => {
+    //   this.getFriends();
+    //   if (this.currentReceiver) {
+    //     this.getData(this.admin, this.currentReceiver)
+    //   }
+    // })
+    this.getFriends();
   }
 }
 </script>
@@ -279,10 +363,59 @@ body {
   }
 }
 
+$white: #fff;
+$google-blue: #4285f4;
+$button-active-blue: #1669F2;
+
+.google-btn {
+  width: 190px;
+  height: 42px;
+  background-color: $google-blue;
+  border-radius: 2px;
+  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, .25);
+
+  .google-icon-wrapper {
+    position: absolute;
+    margin-top: 1px;
+    margin-left: 1px;
+    width: 40px;
+    height: 40px;
+    border-radius: 2px;
+    background-color: $white;
+  }
+
+  .google-icon {
+    position: absolute;
+    margin-top: 11px;
+    margin-left: 11px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .btn-text {
+    float: right;
+    margin: 11px 11px 0 0;
+    color: $white;
+    font-size: 14px;
+    letter-spacing: 0.2px;
+    font-family: "Roboto";
+  }
+
+  &:hover {
+    box-shadow: 0 0 6px $google-blue;
+  }
+
+  &:active {
+    background: $button-active-blue;
+  }
+}
+
+@import url(https://fonts.googleapis.com/css?family=Roboto:500);
+
 .chatbox {
   background: rgba(255, 255, 255, 0.05);
   width: 600px;
-  height: 75%;
+  height: 80%;
   border-radius: 0.2em;
   position: relative;
   box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.1);
@@ -426,6 +559,38 @@ body {
     }
   }
 }
+
+body {
+  overflow: hidden;
+}
+
+.button-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn {
+  font-size: 30px;
+  margin: 15px;
+  padding: 10px 20px;
+  color: white;
+  border-radius: 10px;
+  border-color: transparent;
+  cursor: pointer;
+  transition: background-color 0.5s ease-in-out;
+}
+
+.btn-accept {
+  background-color: rgba(66, 184, 131, 0.6);
+}
+
+.btn-accept:hover {
+  background-color: rgb(66, 184, 131);
+}
+
 
 // Placeholder Styling
 ::-webkit-input-placeholder {

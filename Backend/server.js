@@ -9,7 +9,8 @@ const app = express();
 var http = _http.Server(app);
 var io = socketio(http);
 
-const dburl = "mongodb://localhost:27017/chatty";
+const dburl =
+  "mongodb+srv://aritra8438:<>password>@cluster0.gownv1w.mongodb.net/?retryWrites=true&w=majority";
 
 mongoose.set("strictQuery", false);
 mongoose
@@ -36,11 +37,7 @@ var userModel = mongoose.model(
   {
     email: String,
     name: String,
-    friends: [
-      {
-        name: String,
-      },
-    ],
+    friends: [],
   },
   "Users"
 );
@@ -49,12 +46,16 @@ app.use(express.static(__dirname));
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: "http://localhost:8080",
+    origin: "*",
   })
 );
 
 io.on("connection", (socket) => {});
 const PORT = 3001;
+
+app.get("/Hey", (req, res) => {
+  res.send("Hello");
+});
 
 app.get("/get-messages", (req, res) => {
   messageModel
@@ -80,6 +81,30 @@ app.get("/get-user", (req, res) => {
     });
 });
 
+app.get("/get-friends", (req, res) => {
+  userModel
+    .find(req.query)
+    .then((users) => {
+      res.send(users[0].friends);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+});
+
+app.get("/check-user-unique", (req, res) => {
+  userModel
+    .find(req.query)
+    .then((users) => {
+      if (users.length === 0) {
+        res.send("1");
+      } else res.send("");
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+});
+
 app.post("/add-user", (req, res) => {
   var instance = new userModel({
     name: req.body.name,
@@ -94,43 +119,50 @@ app.post("/add-user", (req, res) => {
     });
 });
 
-app.patch("/add-friend", (req, res) => {
+app.patch("/add-friend/", (req, res) => {
   let email = {
     email: req.body.email,
   };
-  console.log(email);
   userModel
     .find(email)
-    .then((user) => {
-      if (user.length === 0) {
+    .then((users) => {
+      if (users.length === 0) {
         res.send(null);
+        return;
       } else {
-        admin = user[0];
-        console.log(admin);
+        admin = users[0];
         let friendMail = {
           email: req.body.friend,
         };
         userModel
           .find(friendMail)
           .then((friendUsers) => {
-            console.log(friendUsers[0].name);
-            console.log(typeof friendUsers[0].name);
             try {
-              //admin.friends.push(friendUsers[0].name);
+              if (friendUsers.length === 0) {
+                res.send(null);
+                return;
+              }
+              let friend = friendUsers[0];
+              if (!admin.friends.includes(friend.name))
+                admin.friends.push(String(friend.name));
+              if (!friend.friends.includes(admin.name))
+                friend.friends.push(String(admin.name));
               admin.save();
+              friend.save();
+              res.send("Friend Added");
             } catch (err) {
               console.log(err);
+              res.sendStatus(404);
             }
-            res.send("Done");
           })
           .catch((err) => {
             console.log(err);
-            res.send("Fail");
+            res.sendStatus(404);
           });
       }
     })
     .catch((err) => {
-      //res.send(err);
+      res.send(err);
     });
 });
 
@@ -174,9 +206,9 @@ app.post("/send-message", (req, res) => {
       console.log(err);
       res.sendStatus(500);
     });
-  io.emit("message", req.body);
+  io.emit("message");
 });
 
 http.listen(PORT, () => {
-  console.log("Server running on port 3000");
+  console.log("Server running on port 3001");
 });

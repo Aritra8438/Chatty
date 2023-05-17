@@ -7,9 +7,10 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 const firebaseConfig = {
-  //Get your firebase authentication here
+  //Follow the readme file to get your firebase config
 };
 firebase.initializeApp(firebaseConfig);
 
-axios.defaults.baseURL = "http://127.0.0.1:3001/";
+//axios.defaults.baseURL = "http://127.0.0.1:3001/";
+axios.defaults.baseURL = "https://chatty-backend-steel.vercel.app/";
 createApp(App).use(store).use(router, axios, firebase).mount("#app");
