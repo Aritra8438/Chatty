@@ -24,7 +24,7 @@
 # Website <br>
 <a href="https://aritra8438.github.io/Chatty/"><strong>The website is Live !!</strong></a>
 <br>
-Here is a [live demo](https://www.youtube.com/watch?v=Ex2_z9XPSmE) of the local development setup.
+Here is a [video demo](https://www.youtube.com/watch?v=Ex2_z9XPSmE) of the local development setup.
 
  
 # Local Development Setup
