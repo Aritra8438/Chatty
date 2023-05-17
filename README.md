@@ -99,7 +99,10 @@ const firebaseConfig = {
 
 
 **Congrats, you have run the projcet locally.**
- 
+
+**Polling vs websockets:**
+While running locally, you can use streaming as it has superior performance.
+But while deploying, make sure that you have used polling as some hosting platforms (eg. **vercel**) don't allow websockets.
  
 
 # Features
