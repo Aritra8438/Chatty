@@ -13,26 +13,42 @@
 
 # Index <br>
 &nbsp;&nbsp;&nbsp;To quickly jump to a subsection, 
-* [Website](https://github.com/Aritra8438/Chatty/tree/master#website-the-website-is-live)             
+* [Website](https://github.com/Aritra8438/Chatty/tree/main#website-the-website-is-live)             
                 
-* [Local Development Setup](https://github.com/Aritra8438/Chatty/tree/master#local-development-setup)                
+* [Local Development Setup](https://github.com/Aritra8438/Chatty/tree/main#local-development-setup)                
                 
-* [Features](https://github.com/Aritra8438/Chatty/tree/master#features)                
+* [Features](https://github.com/Aritra8438/Chatty/tree/main#features)                
                 
-* [Scope of improvements](https://github.com/Aritra8438/Chatty/tree/master#scope-of-improvements)
+* [Scope of improvements](https://github.com/Aritra8438/Chatty/tree/main#scope-of-improvements)
 
-# Website <br><br><a href="https://aritra8438.github.io/Chatty/"><strong>The website is Live !!</strong></a><br><br>
+# Website <br>
+<a href="https://aritra8438.github.io/Chatty/"><strong>The website is Live !!</strong></a>
+<br>
 Here is a [live demo](https://youtu.be/YwS04n7Ss3U) of the local development setup.
 
  
 # Local Development Setup
 
+**Database:**
+
 You need to run mongodb on localhost first to run this project locally.
 Please follow this instructions here: 
-- [windows](https://stackoverflow.com/questions/20796714/how-do-i-start-mongo-db-from-windows)
-- [macOS](https://kb.objectrocket.com/mongo-db/start-mongodb-mac-how-to-start-mongodb-on-a-mac-438)
+- [Windows](https://stackoverflow.com/questions/20796714/how-do-i-start-mongo-db-from-windows)
+- [MacOS](https://kb.objectrocket.com/mongo-db/start-mongodb-mac-how-to-start-mongodb-on-a-mac-438)
 - [Ubuntu](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/)
 
+Alternatively, you can host your database at `MongoDB Atlas`.
+Please go through the [documentation](https://www.mongodb.com/docs/atlas/app-services/apps/) to go use remote atlas database with this app.
+
+All you need is a connection string:
+
+`mongodb://localhost:27017/`
+
+`mongodb+srv://aritra8438:*****@cluster0.gownv1w.mongodb.net/?retryWrites=true&w=majority`
+
+Replace dburl with this string.
+
+**Git:**
 
 Open the terminal at the destination folder:
 ```bash
@@ -40,10 +56,7 @@ Open the terminal at the destination folder:
 git clone https://github.com/Aritra8438/Chatty.git
 ```
 
-This project's database is hosted at MongoDB Atlas. 
-Pleas go through the documentation to go use remote atlas database eith this app.
-
-Backend:
+**Backend:**
 ```bash
 cd Backend
 # Install the dependencies from package-lock.json
@@ -51,18 +64,19 @@ npm install
 # Your backend server is now ready, let's serve it
 npm run dev
 ```
- Holla, you have run it on localhost:3001
+
+Holla, you have run it on localhost:3001
  
+ **Frontend:**
  
- Let's start working on the frontend. Open the terminal at the current directory:
  ```bash
  cd frontend/chatty
  npm install
  npm run serve
  ```
- That's it. Your frontend is running on localhost:8080. <br> 
+ That's it. Your frontend is running on localhost:8080. 
  
- Let's setup firebase:
+ **Firebase:**
  
  - Go to Firebase console and [add a new project](https://console.firebase.google.com/u/0/) 
  - Set up authenication method [here](https://console.firebase.google.com/u/0/project/chatty-52aa7/authentication/providers).
@@ -83,7 +97,8 @@ const firebaseConfig = {
 
 - Copy this config and paste it to main.js inside Frontend/chatty
 
-Congratulations, you have locally set up this project.
+
+**Congrats, you have run the projcet locally.**
  
  
 
