@@ -1,5 +1,7 @@
-# Chatty 
-A real time chat application based on socket.io
+<p align="center">
+    <img src="https://github.com/Aritra8438/GSoC_archive/assets/64671908/6e44b0f9-8dbd-421d-9763-8d1a402299d0">    
+</p>
+<p align="center"><b>A simple chat application based on socket.io</b></p>
 <p align="center">
   <br>
   <a href="https://github.com/Aritra8438/Demo_E-commerce_Site/tree/master"><img src="https://img.shields.io/badge/LICENSE-MIT-green" alt="MIT" /></a>    
@@ -7,25 +9,23 @@ A real time chat application based on socket.io
     <img src="https://badges.frapsoft.com/os/v1/open-source.png?v=103">
   </a>
 </p>
-<hr>
+
 
 # Index <br>
 &nbsp;&nbsp;&nbsp;To quickly jump to a subsection, 
+* [Website](https://github.com/Aritra8438/Chatty/tree/master#website-the-website-is-live)             
+                
+* [Local Development Setup](https://github.com/Aritra8438/Chatty/tree/master#local-development-setup)                
+                
+* [Features](https://github.com/Aritra8438/Chatty/tree/master#features)                
+                
+* [Scope of improvements](https://github.com/Aritra8438/Chatty/tree/master#scope-of-improvements)
 
-* [Website](https://github.com/Mercor-Projects/Aritra8438-BackendDevSMSMedicineReminder/tree/master#website-the-website-is-live)             
-                
-* [Local Development Setup](https://github.com/Mercor-Projects/Aritra8438-BackendDevSMSMedicineReminder/tree/master#follow-these-steps-to-run-this-code-on-your-end)                
-                
-* [Features](https://github.com/Mercor-Projects/Aritra8438-BackendDevSMSMedicineReminder/tree/master#features)                
-                
-* [Scope of improvements](https://github.com/Mercor-Projects/Aritra8438-BackendDevSMSMedicineReminder/tree/master#scope-of-improvements)
-
-# Website <br><br><a href="https://aritra8438.github.io/Chatty/"><strong>The website will be live after a while</strong></a><br><br>
+# Website <br><br><a href="https://aritra8438.github.io/Chatty/"><strong>The website is Live !!</strong></a><br><br>
 Here is a [live demo](https://youtu.be/YwS04n7Ss3U) of the local development setup.
-<hr>
 
  
-# Follow these steps to run this code on your end.
+# Local Development Setup
 
 You need to run mongodb on localhost first to run this project locally.
 Please follow this instructions here: 
@@ -40,7 +40,8 @@ Open the terminal at the destination folder:
 git clone https://github.com/Aritra8438/Chatty.git
 ```
 
-This project's database is hosted at MongoDB localhost. 
+This project's database is hosted at MongoDB Atlas. 
+Pleas go through the documentation to go use remote atlas database eith this app.
 
 Backend:
 ```bash
@@ -96,11 +97,10 @@ Congratulations, you have locally set up this project.
 
 # Scope of Improvements
 
-1> Rich features like is user active?, last-seen, number of unread message can easily be added.
-
-2> Images and voice message support can be added to enhance UX.
-
-3> Add features for setiings, set background color, blocking someone etc. etc
+- Rich features like is user active?, last-seen, number of unread message can easily be added.
+- Images and voice message support can be added to enhance UX.
+- Add features for setiings, set background color, blocking someone etc.
+- Cookies can be used to get rid off frequent login.
 
 These improvements can be implemented with ease if needed .
 
