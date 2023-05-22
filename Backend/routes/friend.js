@@ -15,7 +15,6 @@ router.get("", async (req, res) => {
     res.status(405).send("Please enter the correct username/email");
     return;
   }
-  console.log(req.query);
   await User.find(req.query)
     .then((users) => {
       res.status(200).send(users[0].friends);
