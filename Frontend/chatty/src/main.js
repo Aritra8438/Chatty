@@ -11,6 +11,5 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
-//axios.defaults.baseURL = "http://127.0.0.1:3001/";
-axios.defaults.baseURL = "https://chatty-backend-steel.vercel.app/";
+axios.defaults.baseURL = "http://127.0.0.1:3001/";
 createApp(App).use(store).use(router, axios, firebase).mount("#app");

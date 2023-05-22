@@ -75,8 +75,8 @@
 import axios from 'axios';
 import { toast } from 'bulma-toast';
 import firebase from "firebase/compat/app";
-//import io from 'socket.io-client';
-//const socket = io('https://chatty-backend-steel.vercel.app/', { transports: ['websocket'] });
+import io from 'socket.io-client';
+const socket = io('http://localhost:3001', { transports: ['websocket'] });
 export default {
   data() {
     return {
@@ -97,11 +97,12 @@ export default {
       if (this.admin.length <= 3) {
         return;
       }
-      let url = "/check-user-unique?name=" + this.admin
+      let url = "/user/unique?name=" + this.admin
       await axios
         .get(url)
         .then((response) => {
-          if (response.data) {
+          console.log(response);
+          if (response.data === "user does not exist") {
             this.isUnique = true;
           }
           else {
@@ -114,7 +115,7 @@ export default {
         })
     },
     async getFriends() {
-      let url = "/get-friends?name=" + this.admin
+      let url = "/friends?name=" + this.admin
       await axios
         .get(url)
         .then((response) => {
@@ -127,7 +128,7 @@ export default {
     async addUser() {
       await this.checkUserUnique()
       if (this.isUnique) {
-        let url = "/add-user/";
+        let url = "/user/";
         let payload = {
           "name": this.admin,
           "email": this.admin_email,
@@ -155,7 +156,7 @@ export default {
       }
     },
     async addFriend() {
-      let url = "/add-friend/";
+      let url = "/friend/";
       let payload = {
         "email": this.admin_email,
         "friend": this.friend,
@@ -184,14 +185,14 @@ export default {
         })
       this.getFriends();
     },
-    async googleSignIn() {
+    googleSignIn() {
       const provider = new firebase.auth.GoogleAuthProvider();
-      await firebase
+      firebase
         .auth()
         .signInWithPopup(provider)
         .then((response) => {
           let user_email = response.additionalUserInfo.profile.email;
-          let url = "/get-user?email=" + user_email;
+          let url = "/user?email=" + user_email;
           axios
             .get(url)
             .then((response) => {
@@ -223,7 +224,7 @@ export default {
       container.scrollTop = container.scrollHeight;
     },
     async sendMessage() {
-      let url = "/send-message/";
+      let url = "/message/";
       let payload = {
         "sender": this.admin,
         "receiver": this.currentReceiver,
@@ -238,7 +239,7 @@ export default {
       this.scrollToEnd();
     },
     async getData(sender = null, receiver = null) {
-      let url = "/get-messages";
+      let url = "/messages";
       let tempMessageSet = [];
       if (sender && receiver) {
         url += "?sender=" + sender + "&receiver=" + receiver;
@@ -248,7 +249,7 @@ export default {
         .get(url)
         .then((response) => { tempMessageSet = response.data; })
         .catch((err) => { console.log(err) })
-      url = "/get-messages";
+      url = "/messages";
       if (sender && receiver) {
         url += "?sender=" + receiver + "&receiver=" + sender;
       }
@@ -261,21 +262,20 @@ export default {
     }
   },
   mounted() {
-    setInterval(() => {
-      this.getFriends();
-      if (this.currentReceiver) {
-        this.getData(this.admin, this.currentReceiver)
-      }
-    }, 1000);
-    // socket.on('connect', () => {
-    // })
-    // socket.on('message', () => {
+    // setInterval(() => {
     //   this.getFriends();
     //   if (this.currentReceiver) {
     //     this.getData(this.admin, this.currentReceiver)
     //   }
-    // })
-    this.getFriends();
+    // }, 1000);
+    socket.on('connect', () => {
+    })
+    socket.on('message', () => {
+      this.getFriends();
+      if (this.currentReceiver) {
+        this.getData(this.admin, this.currentReceiver)
+      }
+    })
   }
 }
 </script>
