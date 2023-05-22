@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
-const dburl =
-  "mongodb+srv://aritra8438:cRtyDoKOTpXnVJJL@cluster0.gownv1w.mongodb.net/?retryWrites=true&w=majority";
+const dburl = "Your Connection String";
 
 mongoose.set("strictQuery", false);
 mongoose
