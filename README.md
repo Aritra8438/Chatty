@@ -98,7 +98,7 @@ const firebaseConfig = {
 - Copy this config and paste it to main.js inside Frontend/chatty
 
 
-**Congrats, you have run the projcet locally.**
+**Congrats, you have run the project locally.**
 
 **Polling vs websockets:**
 While running locally, you can use streaming as it has superior performance.
