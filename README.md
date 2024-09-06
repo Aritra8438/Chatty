@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://github.com/Aritra8438/GSoC_archive/assets/64671908/6e44b0f9-8dbd-421d-9763-8d1a402299d0">    
+    <img src="https://github.com/user-attachments/assets/404224db-654e-49bc-bbf6-056447120f57">    
 </p>
 <p align="center"><b>A simple chat application based on socket.io</b></p>
 <p align="center">
