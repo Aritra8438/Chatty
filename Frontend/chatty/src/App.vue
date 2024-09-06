@@ -41,7 +41,7 @@
       <div class="chatbox__messages__user-message--ind-message-right" v-if="!currentReceiver">
         <p class="name"> Hello </p>
         <br />
-        <p class="message"> Please select a frined to proceed </p>
+        <p class="message"> Please select a friend to proceed </p>
       </div>
       <div ref="scroll_down" style="overflow-y:scroll; overflow-x:hidden; height:435px;">
         <div class="chatbox__messages" v-for="message in messageSet" :key="message.key">
